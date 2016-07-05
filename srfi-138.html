@@ -18,10 +18,10 @@ Marc Nieper-Wi&szlig;kirchen
 <h1>Abstract</h1>
 
 <p>
-  This SRFI describes on sufficiently POSIX-compatible systems 
+  This SRFI describes, for sufficiently POSIX-compatible systems,
   a portable interface for compiling Scheme programs
   conforming to the R7RS to binaries that can be directly executed on the
-  host system. 
+  host system.
 </p>
 
 <h1>Issues</h1>
@@ -51,15 +51,15 @@ portable scripts (including
 </p>
 
 <p>
-  It is the purpose of this SRFI to describe an analoguous interface
+  It is the purpose of this SRFI to describe an analogous interface
   for Scheme programs conforming to the R7RS.
 </p>
 
 <p>
   While this SRFI speaks of <em>compiling</em> Scheme programs, the interface
   described by this SRFI applies also to Scheme interpreters. The only
-  requirement for the compilers output is that it is a directly executable
-  program on the host maching. In particular, the resulting
+  requirement for the compiler's output is that it is a directly executable
+  program on the host machine. In particular, the resulting
   binary is allowed to call an interpreter to execute the actual Scheme program.
 </p>
 
@@ -136,7 +136,7 @@ The following options shall be supported:
 <h3>Input Files</h3>
 
 <p>
-  The input file shall be a text file containing a R7RS-program.
+  The input file shall be a text file containing a R7RS program.
 </p>
 
 <h3>Exit Status</h3>
@@ -154,7 +154,7 @@ The following options shall be supported:
 
 <h3>Output file</h3>
 
-The format of the executable file produces is unspecified (e.g. it may
+The format of the executable file produced is unspecified (e.g. it may
 be a shell script).  It is unspecified whether the libraries imported
 from the program are statically linked in the executable file. Thus,
 if a <em>directory</em> specified by a <strong>-A</strong>,
@@ -190,7 +190,7 @@ by the R7RS.
 
 <p>
   As the mapping from library names to pathnames is not injective (a library name element may
-  contain a slash, for exampe), implementations are encouraged to allow more than one library
+  contain a slash, for example), implementations are encouraged to allow more than one library
   definition in a text file that is located by this algorithm.
 </p>
 
@@ -206,7 +206,7 @@ implementation supporting this SRFI will have to ship its own implementation. Th
 Scheme systems that already implement most of this SRFI: Chibi and Larceny implement the
 library location algorithm described above. Chibi implements the <strong>-D</strong>,
 <strong>-A</strong>, and <strong>-I</strong> options. Larceny implements compiling library
-definitions into an implementation defined format.
+definitions into an implementation-defined format.
 
 <h1>Acknowledgements</h1>
 
