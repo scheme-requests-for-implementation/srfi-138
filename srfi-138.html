@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>SRFI 138: Compiling Scheme programs</title>
+    <link rel="stylesheet" href="http://srfi.schemers.org/srfi.css" type="text/css" />
+  </head>
+
+  <body>
+
+<h1>Title</h1>
+
+Compiling Scheme programs
+
+<h1>Author</h1>
+
+Marc Nieper-Wi&szlig;kirchen
+
+<h1>Abstract</h1>
+
+<p>
+  This SRFI describes on sufficiently POSIX-compatible systems 
+  a portable interface for compiling Scheme programs
+  conforming to the R7RS to binaries that can be directly executed on the
+  host system. 
+</p>
+
+<h1>Issues</h1>
+
+<p>
+  There are currently no issues.
+</p>
+
+<h1>Rationale</h1>
+
+<p>
+While the R7RS describes portable Scheme programs, it does not
+describe how to actually store and run such a Scheme program together
+with its libraries on a host system. This makes it impossible to write
+portable scripts (including
+<em>Makefile</em>s) that involve compiling and running Scheme programs.
+</p>
+
+<p>
+  This situation of Scheme can be compared to the C language. While ISO
+  C does define the syntax and semantics of C programs, it leaves out
+  questions how C programs are compiled and run on the host
+  system. Contrary to Scheme programs, however, there also exists a
+  portable interface for compiling and running C programs (at least on
+  POSIX-conforming systems), namely the description of the <em>c99</em>
+  utility in the POSIX standard.
+</p>
+
+<p>
+  It is the purpose of this SRFI to describe an analoguous interface
+  for Scheme programs conforming to the R7RS.
+</p>
+
+<p>
+  While this SRFI speaks of <em>compiling</em> Scheme programs, the interface
+  described by this SRFI applies also to Scheme interpreters. The only
+  requirement for the compilers output is that it is a directly executable
+  program on the host maching. In particular, the resulting
+  binary is allowed to call an interpreter to execute the actual Scheme program.
+</p>
+
+<h1>Specification</h1>
+
+<p>The following description of the utility described by this SRFI follows in form
+  roughly the description of <em>c99</em> of the POSIX standard.
+</p>
+
+<h2>Utilities</h2>
+
+<h3>Name</h3>
+
+compile-r7rs &ndash; compile R7RS programs
+
+<h3>Synopsis</h3>
+
+<pre>
+  compile-r7rs [<em>options</em>...] <em>pathname</em>
+</pre>
+
+<h3>Description</h3>
+
+The <code>compile-r7rs</code> utility is an interface to a compiler
+for Scheme programs conforming to the R7RS. The
+program <em>pathname</em> shall be compiled to produce an executable
+file. The resulting executable file shall be written to the file
+specified by the <strong>-o</strong> option (if present) or to the file <strong>a.out</strong>.
+The file shall be made executable.
+
+<h3>Options</h3>
+
+<p>
+The following options shall be supported:
+</p>
+
+<dl>
+  <dt><strong>-D</strong> <em>name</em></dt>
+  <dd>
+    Add <em>name</em> to the list of feature identifiers maintained by the Scheme implementation
+    for the purpose of executing the program in the text file <em>pathname</em>.
+  </dd>
+  <dt><strong>-A</strong> <em>directory</em></dt>
+  <dd>
+    Append <em>directory</em> to the list of directories that are searched in order to locate
+    imported libraries.
+    <dt><strong>-I</strong> <em>directory</em></dt>
+  <dd>
+    Prepend <em>directory</em> to the list of directories that are searched in order to locate
+    imported libraries.
+  </dd>
+  <dt><strong>-o</strong> <em>outfile</em></dt>
+  <dd>
+    Use the pathname <em>outfile</em>, instead of the default <strong>a.out</strong>, for the
+    executable file produced.
+  </dd>
+  <dt>
+</dl>
+
+<p>Multiple instances of the <strong>-D</strong>, <strong>-A</strong>, and <strong>-I</strong>
+  options can be specified.
+</p>
+
+<h3>Operands</h3>
+
+<p>
+  The application shall ensure that exactly one <em>pathname</em> operand is specified.
+</p>
+
+<h3>Input Files</h3>
+
+<p>
+  The input file shall be a text file containing a R7RS-program.
+</p>
+
+<h3>Exit Status</h3>
+
+<p>
+  The following exit values shall be returned:
+</p>
+
+<dl>
+  <dt>0</dt>
+  <dd>Successful compilation.</dd>
+  <dt>&gt;0</dt>
+  <dd>An error occurred.</dd>
+</dl>
+
+<h3>Output file</h3>
+
+The format of the executable file produces is unspecified (e.g. it may
+be a shell script).  It is unspecified whether the libraries imported
+from the program are statically linked in the executable file. Thus,
+if a <em>directory</em> specified by a <strong>-A</strong>,
+or <strong>-I</strong> option is not an absolute pathname, the
+resulting executable file may not be relocatable in the file system.
+
+<h3>Extended Description</h3>
+
+<h4>Location of Libraries</h4>
+
+<p>
+As the R7RS does not describe a mapping between library names and text files
+containing library
+definitions, this SRFI defines such a mapping as follows: First of all, a library name
+<code>(&lt;library name element&gt; ... &lt;library name element&gt;)</code> is mapped to the
+(relative) pathname <code>&lt;library name element&gt;/.../&lt;library name element&gt;.sld</code>.
+If the input file processed by <code>compile-r7rs</code> directly or indirectly imports a library,
+the application searches an implementation-defined list of directories (which is amended by the
+<strong>-A</strong> and <strong>-I</strong> options) for the pathname corresponding to the
+library until a valid text file containing a library definition for the imported library is
+found.
+</p>
+
+<p>
+This SRFI does not specify whether this algorithm applies to the standard libraries described
+by the R7RS. 
+</p>
+
+<p>
+  The algorithm is unspecified if the mapping from library names to pathnames produces invalid
+  pathnames on the host system (e.g. if a library name element contains a null character).
+</p>
+
+<p>
+  As the mapping from library names to pathnames is not injective (a library name element may
+  contain a slash, for exampe), implementations are encouraged to allow more than one library
+  definition in a text file that is located by this algorithm.
+</p>
+
+<h1>Implementation</h1>
+
+There exists no portable implementation (otherwise this SRFI would be moot), so each Scheme
+implementation supporting this SRFI will have to ship its own implementation. There are
+Scheme systems that already implement most of this SRFI: Chibi and Larceny implement the
+library location algorithm described above. Chibi implements the <strong>-D</strong>,
+<strong>-A</strong>, and <strong>-I</strong> options.
+
+<h1>Acknowledgements</h1>
+
+This SRFI is related to, but not overlapping with SRFI 22. The specification of
+<em>c99</em> by the POSIX standard and the Chibi and Larceny implementations of R7RS were
+influential while this SRFI was written.
+
+<h1>Copyright</h1>
+Copyright (C) Marc Nieper-Wi&szlig;kirchen (2016).  All Rights Reserved. 
+
+<p>
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated documentation files
+  (the "Software"), to deal in the Software without restriction,
+  including without limitation the rights to use, copy, modify, merge,
+  publish, distribute, sublicense, and/or sell copies of the Software,
+  and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
+
+<p>
+  The above copyright notice and this permission notice shall be
+  included in all copies or substantial portions of the Software.
+
+<p>
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+
+  <hr>
+  <address>Editor: <a href="mailto:srfi-editors+at+srfi+dot+schemers+dot+org">Arthur A. Gleckler</a></address></body></html>
