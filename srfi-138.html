@@ -78,14 +78,14 @@ compile-r7rs &ndash; compile R7RS programs
 <h3>Synopsis</h3>
 
 <pre>
-  compile-r7rs [<em>options</em>...] <em>pathname</em>
+  compile-r7rs [<em>options</em>...] [<em>pathname</em>]
 </pre>
 
 <h3>Description</h3>
 
 The <code>compile-r7rs</code> utility is an interface to a compiler
 for Scheme programs conforming to the R7RS. The
-program <em>pathname</em> shall be compiled to produce an executable
+program <em>pathname</em> (if present) shall be compiled to produce an executable
 file. The resulting executable file shall be written to the file
 specified by the <strong>-o</strong> option (if present) or to the file <strong>a.out</strong>.
 The file shall be made executable.
@@ -126,7 +126,11 @@ The following options shall be supported:
 <h3>Operands</h3>
 
 <p>
-  The application shall ensure that exactly one <em>pathname</em> operand is specified.
+  If exactly one <em>pathname</em> operand is specified, the application shall behave as
+  specified. If no such operand is given, the application may do nothing or compile the
+  library definitions contained in text files in the directories (and its subdirectories)
+  specified by the <strong>-A</strong>, and <strong>-I</strong> options into
+  an implementation-defined format. 
 </p>
 
 <h3>Input Files</h3>
@@ -190,13 +194,19 @@ by the R7RS.
   definition in a text file that is located by this algorithm.
 </p>
 
+<p>
+  The application may use compiled versions of the library definitions that are produced by running
+  the utility without a <em>pathname</em> argument instead of the library definitions itself.
+</p>
+
 <h1>Implementation</h1>
 
 There exists no portable implementation (otherwise this SRFI would be moot), so each Scheme
 implementation supporting this SRFI will have to ship its own implementation. There are
 Scheme systems that already implement most of this SRFI: Chibi and Larceny implement the
 library location algorithm described above. Chibi implements the <strong>-D</strong>,
-<strong>-A</strong>, and <strong>-I</strong> options.
+<strong>-A</strong>, and <strong>-I</strong> options. Larceny implements compiling library
+definitions into an implementation defined format.
 
 <h1>Acknowledgements</h1>
 
