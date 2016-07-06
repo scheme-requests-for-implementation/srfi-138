@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html>
   <head>
-    <title>SRFI 138: Compiling Scheme programs</title>
+    <title>SRFI 138: Compiling Scheme programs to executables</title>
     <link rel="stylesheet" href="http://srfi.schemers.org/srfi.css" type="text/css" />
   </head>
 
@@ -9,7 +9,7 @@
 
 <h1>Title</h1>
 
-Compiling Scheme programs to POSIX executables
+Compiling Scheme programs to executables
 
 <h1>Author</h1>
 
@@ -52,7 +52,12 @@ portable scripts (including
 
 <p>
   It is the purpose of this SRFI to describe an analogous interface
-  for Scheme programs conforming to the R7RS.
+  for Scheme programs conforming to the R7RS. The description assumes
+  a sufficiently POSIX-compatible system, not because it needs any very
+  POSIX-specific features but because POSIX is a host system interface
+  that has been standardized. <i>Mutatis mutandis</i>, this specification
+  also applies to host systems with a similar file and command line
+  interface as described by POSIX, like Windows.
 </p>
 
 <p>
@@ -130,7 +135,16 @@ The following options shall be supported:
   specified. If no such operand is given, the application may do nothing or compile the
   library definitions contained in text files in the directories (and its subdirectories)
   specified by the <strong>-A</strong>, and <strong>-I</strong> options into
-  an implementation-defined format. 
+  an implementation-defined format.
+</p>
+
+<p>
+  <i>Rationale: In implementations supporting precompilation of
+    libraries, libraries are usually precompiled when they are installed as this may need
+    administrator privileges depending on the file system location of the libraries. Thus
+    the above description ensures that compilation of a program can be split into two phases,
+    one happening at library installation time, the other happening when the final executable
+    is build from the program source.</i>
 </p>
 
 <h3>Input Files</h3>
@@ -201,18 +215,38 @@ by the R7RS.
 
 <h1>Implementation</h1>
 
+<p>
 There exists no portable implementation (otherwise this SRFI would be moot), so each Scheme
-implementation supporting this SRFI will have to ship its own implementation. There are
+implementation supporting this SRFI should ship its own implementation. There are
 Scheme systems that already implement most of this SRFI: Chibi and Larceny implement the
 library location algorithm described above. Chibi implements the <strong>-D</strong>,
 <strong>-A</strong>, and <strong>-I</strong> options. Larceny implements compiling library
 definitions into an implementation-defined format.
+</p>
+
+<p>
+A not very sophisticated sample implementation for Chibi Scheme is
+provided as a <a href="chibi/compile-r7rs">shell script</a> for
+readers to read and experiment with. (In order for
+the <strong>-D</strong> flag to be supported, a post-0.7.3-release
+version of Chibi is needed.)
+</p>
 
 <h1>Acknowledgements</h1>
 
-This SRFI is related to, but not overlapping with SRFI 22. The specification of
+<p>
+This SRFI is related to, but not overlapping with SRFI 22. While SRFI 22 describes how Scheme
+script executables can be written without invoking a compiler, this SRFI does not assume that
+the compiled file is in any human-readable format. Furthermore, this SRFI assumes an underlying
+implementation of R7RS and specifies how to locate libraries supplementary to the standard
+libraries, which is not possible with SRFI 22. Thus, neither SRFI makes the other obsolete.
+</p>
+
+<p>
+The specification of
 <em>c99</em> by the POSIX standard and the Chibi and Larceny implementations of R7RS were
 influential while this SRFI was written.
+</p>
 
 <h1>Copyright</h1>
 Copyright (C) Marc Nieper-Wi&szlig;kirchen (2016).  All Rights Reserved. 

@@ -1,0 +1,38 @@
+#! /bin/sh
+
+set -e
+
+outfile=a.out
+cmdline=chibi-scheme
+
+while getopts :A:D:I:o: name
+do
+    case $name in
+	A) cmdline="$cmdline -A $OPTARG";;
+	D) cmdline="$cmdline -D $OPTARG";;
+	I) cmdline="$cmdline -I $OPTARG";;
+	o) outfile="$OPTARG";;
+	:) printf "%s: error: argument missing after ‘-%s’\n" $0 $OPTARG
+	   exit 2;;
+	?) printf "%s: error: unrecognized command line option ‘-%s’\n" $0 $OPTARG
+	exit 2;;
+    esac
+done
+
+shift $(($OPTIND - 1))
+
+if [ -z "$1" ]; then
+   exit 0
+fi
+
+cat <<EOF >"$outfile"
+#! /bin/sh
+#|
+$cmdline -- "\$0" "\$@"
+exit \$?
+|#
+EOF
+
+cat "$1" >>"$outfile"
+
+chmod a+x "$outfile"
