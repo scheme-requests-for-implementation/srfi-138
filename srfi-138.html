@@ -17,7 +17,15 @@ Marc Nieper-Wi&szlig;kirchen
 
 <h1>Status</h1>
 
-<p>This SRFI is currently in <em>draft</em> status.  Here is <a href="http://srfi.schemers.org/srfi-process.html">an explanation</a> of each status that a SRFI can hold.  To provide input on this SRFI, please send email to <code><a href="mailto:srfi+minus+138+at+srfi+dotschemers+dot+org">srfi-138@<span class="antispam">nospam</span>srfi.schemers.org</a></code>.  To subscribe to the list, follow <a href="http://srfi.schemers.org/srfi-list-subscribe.html">these instructions</a>.  You can access previous messages via the mailing list <a href="http://srfi-email.schemers.org/srfi-138">archive</a>.</p>
+<p>This SRFI is currently in <em>draft</em> status.  Here
+is <a href="http://srfi.schemers.org/srfi-process.html">an
+explanation</a> of each status that a SRFI can hold.  To provide input
+on this SRFI, please send email
+to <code><a href="mailto:srfi+minus+138+at+srfi+dotschemers+dot+org">srfi-138@<span class="antispam">nospam</span>srfi.schemers.org</a></code>.
+To subscribe to the list,
+follow <a href="http://srfi.schemers.org/srfi-list-subscribe.html">these
+instructions</a>.  You can access previous messages via the mailing
+list <a href="http://srfi-email.schemers.org/srfi-138">archive</a>.</p>
 <ul>
   <li>Received: 2016/7/5</li>
   <li>60-day deadline: 2016/9/4</li>
@@ -79,11 +87,11 @@ portable scripts (including
 
 <h1>Specification</h1>
 
+<h2>Utilities</h2>
+
 <p>The following description of the utility described by this SRFI follows in form
   roughly the description of <em>c99</em> of the POSIX standard.
 </p>
-
-<h2>Utilities</h2>
 
 <h3>Name</h3>
 
@@ -223,6 +231,37 @@ by the R7RS.
 </p>
 
 <h1>Implementation</h1>
+
+<h2>Notes</h2>
+
+<p>
+  In order for a host system to implement this specification, firstly,
+  it has to provide a command named <i>compile-r7rs</i>, and secondly, this command
+  has to fulfill the command-line arguments interface as described above.
+</p>
+
+<p>
+  For a Scheme system to implement this specification, it is enough to
+  provide the second layer, that is a command,
+  say <i>compile-fantastic-scheme</i>, that conforms to the
+  command-line arguments interface as described above, and to ask the
+  user to create a symlink from <i>compile-fantastic-scheme</i> to
+  a <i>compile-r7rs</i> pathname. (A Scheme system may alternatively
+  provide an option at install time specifying whether the
+  command <i>compile-r7rs</i> should be installed automatically.)
+<p>
+
+<p>
+  <i>Rationale: If a conforming Scheme implementation was forced to
+  install <i>compile-r7rs</i> automatically, several such Scheme
+  implementations in one host system would likely step on each other's
+  toes. So in the case of more than one conforming Scheme
+  implementation, it is really the system administrator's or
+  the distribution tools' matters to provide <i>compile-r7rs</i> as the command
+  name.</i>
+</p>
+
+<h2>Sample Implementation</h2>
 
 <p>
 There exists no portable implementation (otherwise this SRFI would be moot), so each Scheme
