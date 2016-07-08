@@ -107,10 +107,13 @@ compile-r7rs &ndash; compile R7RS programs
 
 The <code>compile-r7rs</code> utility is an interface to a compiler
 for Scheme programs conforming to the R7RS. The
-program <em>pathname</em> (if present) shall be compiled to produce an executable
-file. The resulting executable file shall be written to the file
-specified by the <strong>-o</strong> option (if present) or to the file <strong>a.out</strong>.
-The file shall be made executable.
+program <em>pathname</em> (if present) shall be compiled to produce an
+executable file. The resulting executable file shall be written to the
+file specified by the <strong>-o</strong> option (if present) or to
+the file <em>file</em> if <em>pathname</em> is of the
+form <em>file</em>.<strong>scm</strong>. (Implementations on Windows
+would choose <em>file</em>.<strong>exe</strong> instead
+of <em>file</em>.)
 
 <h3>Options</h3>
 
@@ -148,8 +151,19 @@ The following options shall be supported:
 <h3>Operands</h3>
 
 <p>
-  If exactly one <em>pathname</em> operand is specified, the application shall behave as
-  specified. If no such operand is given, the application may do nothing or compile the
+  If exactly one <em>pathname</em> operand of the
+  form <i>file</i>.<b>scm</b> is specified, the application shall
+  behave as specified. If the operand is not of this form, the
+  behaviour is unspecified.
+</p>
+
+<p>
+  <i>Rationale: This allows an implementation to support additional file types, e.g. top-level
+    programs written for the R6RS, by assigning different extensions to these file types.</i>
+</p>
+
+<p>
+  If no such operand is given, the application may do nothing or compile the
   library definitions contained in text files in the directories (and its subdirectories)
   specified by the <strong>-A</strong>, and <strong>-I</strong> options into
   an implementation-defined format.
@@ -222,7 +236,8 @@ As the R7RS does not describe a mapping between library names and text files
 containing library
 definitions, this SRFI defines such a mapping as follows: First of all, a library name
 <code>(&lt;library name element&gt; ... &lt;library name element&gt;)</code> is mapped to the
-(relative) pathname <code>&lt;library name element&gt;/.../&lt;library name element&gt;.sld</code>.
+(relative) pathname <code>&lt;library name element&gt;/.../&lt;library name
+  element&gt;<b>.sld</b></code>.
 If the input file processed by <code>compile-r7rs</code> directly or indirectly imports a library,
 the application searches an implementation-defined list of directories (which is amended by the
 <strong>-A</strong> and <strong>-I</strong> options) for the pathname corresponding to the
