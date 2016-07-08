@@ -2,7 +2,11 @@
 
 set -e
 
-outfile=a.out
+if [ -n "$COMPILE_R7RS" -a "$0" != "$COMPILE_R7RS" ]; then
+    exec "$COMPILE_R7RS" "$@"
+fi
+
+outfile=
 cmdline=chibi-scheme
 
 while getopts :A:D:I:o: name
@@ -24,6 +28,10 @@ shift $(($OPTIND - 1))
 if [ -z "$1" ]; then
    exit 0
 fi
+
+if [ -z "$outfile" ]; then
+    outfile=$(basename -- "$1" .scm)
+fi;
 
 cat <<EOF >"$outfile"
 #! /bin/sh

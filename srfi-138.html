@@ -17,7 +17,15 @@ Marc Nieper-Wi&szlig;kirchen
 
 <h1>Status</h1>
 
-<p>This SRFI is currently in <em>draft</em> status.  Here is <a href="http://srfi.schemers.org/srfi-process.html">an explanation</a> of each status that a SRFI can hold.  To provide input on this SRFI, please send email to <code><a href="mailto:srfi+minus+138+at+srfi+dotschemers+dot+org">srfi-138@<span class="antispam">nospam</span>srfi.schemers.org</a></code>.  To subscribe to the list, follow <a href="http://srfi.schemers.org/srfi-list-subscribe.html">these instructions</a>.  You can access previous messages via the mailing list <a href="http://srfi-email.schemers.org/srfi-138">archive</a>.</p>
+<p>This SRFI is currently in <em>draft</em> status.  Here
+is <a href="http://srfi.schemers.org/srfi-process.html">an
+explanation</a> of each status that a SRFI can hold.  To provide input
+on this SRFI, please send email
+to <code><a href="mailto:srfi+minus+138+at+srfi+dotschemers+dot+org">srfi-138@<span class="antispam">nospam</span>srfi.schemers.org</a></code>.
+To subscribe to the list,
+follow <a href="http://srfi.schemers.org/srfi-list-subscribe.html">these
+instructions</a>.  You can access previous messages via the mailing
+list <a href="http://srfi-email.schemers.org/srfi-138">archive</a>.</p>
 <ul>
   <li>Received: 2016/7/5</li>
   <li>60-day deadline: 2016/9/4</li>
@@ -79,11 +87,11 @@ portable scripts (including
 
 <h1>Specification</h1>
 
+<h2>Utilities</h2>
+
 <p>The following description of the utility described by this SRFI follows in form
   roughly the description of <em>c99</em> of the POSIX standard.
 </p>
-
-<h2>Utilities</h2>
 
 <h3>Name</h3>
 
@@ -99,10 +107,13 @@ compile-r7rs &ndash; compile R7RS programs
 
 The <code>compile-r7rs</code> utility is an interface to a compiler
 for Scheme programs conforming to the R7RS. The
-program <em>pathname</em> (if present) shall be compiled to produce an executable
-file. The resulting executable file shall be written to the file
-specified by the <strong>-o</strong> option (if present) or to the file <strong>a.out</strong>.
-The file shall be made executable.
+program <em>pathname</em> (if present) shall be compiled to produce an
+executable file. The resulting executable file shall be written to the
+file specified by the <strong>-o</strong> option (if present) or to
+the file <em>file</em> if <em>pathname</em> is of the
+form <em>file</em>.<strong>scm</strong>. (Implementations on Windows
+would choose <em>file</em>.<strong>exe</strong> instead
+of <em>file</em>.)
 
 <h3>Options</h3>
 
@@ -140,8 +151,19 @@ The following options shall be supported:
 <h3>Operands</h3>
 
 <p>
-  If exactly one <em>pathname</em> operand is specified, the application shall behave as
-  specified. If no such operand is given, the application may do nothing or compile the
+  If exactly one <em>pathname</em> operand of the
+  form <i>file</i>.<b>scm</b> is specified, the application shall
+  behave as specified. If the operand is not of this form, the
+  behaviour is unspecified.
+</p>
+
+<p>
+  <i>Rationale: This allows an implementation to support additional file types, e.g. top-level
+    programs written for the R6RS, by assigning different extensions to these file types.</i>
+</p>
+
+<p>
+  If no such operand is given, the application may do nothing or compile the
   library definitions contained in text files in the directories (and its subdirectories)
   specified by the <strong>-A</strong>, and <strong>-I</strong> options into
   an implementation-defined format.
@@ -161,6 +183,27 @@ The following options shall be supported:
 <p>
   The input file shall be a text file containing a R7RS program.
 </p>
+
+<h3>Environment Variables</h3>
+
+The following environment variables shall affect the execution of <i>compile-r7rs</i>:
+
+<dl>
+  <dt>COMPILE_R7RS</dt>
+  <dd>
+    If set to a non-empty pathname, which is not the pathname of the
+    running <i>compile-r7rs</i>, the application should forward
+    execution to the program specified by <i>COMPILE_R7RS</i> passing to it
+    the environment and all its arguments.
+  </dd>
+  <dd>
+    <i>Rationale: If more than one Scheme system conforming to this
+      SRFI is installed on the host system, this allows for easy
+      selection between the Scheme compilers by setting the
+      <i>COMPILE_R7RS</i> variable accordingly, and running the <i>compile-r7rs</i> provided
+      by either system.</i>
+  </dd>
+</dl>
 
 <h3>Exit Status</h3>
 
@@ -193,7 +236,8 @@ As the R7RS does not describe a mapping between library names and text files
 containing library
 definitions, this SRFI defines such a mapping as follows: First of all, a library name
 <code>(&lt;library name element&gt; ... &lt;library name element&gt;)</code> is mapped to the
-(relative) pathname <code>&lt;library name element&gt;/.../&lt;library name element&gt;.sld</code>.
+(relative) pathname <code>&lt;library name element&gt;/.../&lt;library name
+  element&gt;<b>.sld</b></code>.
 If the input file processed by <code>compile-r7rs</code> directly or indirectly imports a library,
 the application searches an implementation-defined list of directories (which is amended by the
 <strong>-A</strong> and <strong>-I</strong> options) for the pathname corresponding to the
@@ -223,6 +267,37 @@ by the R7RS.
 </p>
 
 <h1>Implementation</h1>
+
+<h2>Notes</h2>
+
+<p>
+  In order for a host system to implement this specification, firstly,
+  it has to provide a command named <i>compile-r7rs</i>, and secondly, this command
+  has to fulfill the command-line arguments interface as described above.
+</p>
+
+<p>
+  For a Scheme system to implement this specification, it is enough to
+  provide the second layer, that is a command,
+  say <i>compile-fantastic-scheme</i>, that conforms to the
+  command-line arguments interface as described above, and to ask the
+  user to create a symlink from <i>compile-fantastic-scheme</i> to
+  a <i>compile-r7rs</i> pathname. (A Scheme system may alternatively
+  provide an option at install time specifying whether the
+  command <i>compile-r7rs</i> should be installed automatically.)
+<p>
+
+<p>
+  <i>Rationale: If a conforming Scheme implementation was forced to
+  install <i>compile-r7rs</i> automatically, several such Scheme
+  implementations in one host system would likely step on each other's
+  toes. So in the case of more than one conforming Scheme
+  implementation, it is really the system administrator's or
+  the distribution tools' matters to provide <i>compile-r7rs</i> as the command
+  name.</i>
+</p>
+
+<h2>Sample Implementation</h2>
 
 <p>
 There exists no portable implementation (otherwise this SRFI would be moot), so each Scheme
