@@ -170,6 +170,27 @@ The following options shall be supported:
   The input file shall be a text file containing a R7RS program.
 </p>
 
+<h3>Environment Variables</h3>
+
+The following environment variables shall affect the execution of <i>compile-r7rs</i>:
+
+<dl>
+  <dt>COMPILE_R7RS</dt>
+  <dd>
+    If set to a non-empty pathname, which is not the pathname of the
+    running <i>compile-r7rs</i>, the application should forward
+    execution to the program specified by <i>COMPILE_R7RS</i> passing to it
+    the environment and all its arguments.
+  </dd>
+  <dd>
+    <i>Rationale: If more than one Scheme system conforming to this
+      SRFI is installed on the host system, this allows for easy
+      selection between the Scheme compilers by setting the
+      <i>COMPILE_R7RS</i> variable accordingly, and running the <i>compile-r7rs</i> provided
+      by either system.</i>
+  </dd>
+</dl>
+
 <h3>Exit Status</h3>
 
 <p>

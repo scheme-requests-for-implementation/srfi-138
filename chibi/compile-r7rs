@@ -2,6 +2,10 @@
 
 set -e
 
+if [ -n "$COMPILE_R7RS" -a "$0" != "$COMPILE_R7RS" ]; then
+    exec "$COMPILE_R7RS" "$@"
+fi
+
 outfile=a.out
 cmdline=chibi-scheme
 
