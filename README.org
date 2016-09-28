@@ -4,7 +4,7 @@
 
 This repository hosts [[http://srfi.schemers.org/srfi-138/][SRFI 138]]: Compiling Scheme programs to executables, a [[http://srfi.schemers.org/][Scheme Request for Implementation]].
 
-This SRFI is in /draft/ status.
+This SRFI is in /final/ status.
 
 The full documentation for this SRFI can be found in the [[http://srfi.schemers.org/srfi-138/srfi-138.html][SRFI Document]].
 
